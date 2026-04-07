@@ -1,0 +1,160 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root[data-theme="dark"] {
+    --bg-color: #050505;
+    --text-main: #f5f5f5;
+    --text-muted: #888888;
+    
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    --nav-glass: rgba(5, 5, 5, 0.7);
+    
+    --cursor-dot: #ffffff;
+    --cursor-outline: rgba(255, 255, 255, 0.5);
+    --cursor-outline-hover: rgba(255, 255, 255, 0.1);
+}
+
+:root[data-theme="light"] {
+    --bg-color: #f5f5f5;
+    --text-main: #050505;
+    --text-muted: #555555;
+    
+    --glass-bg: rgba(0, 0, 0, 0.03);
+    --glass-border: rgba(0, 0, 0, 0.1);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+    --nav-glass: rgba(245, 245, 245, 0.7);
+    
+    --cursor-dot: #000000;
+    --cursor-outline: rgba(0, 0, 0, 0.5);
+    --cursor-outline-hover: rgba(0, 0, 0, 0.05);
+}
+
+body, html {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    overflow-x: hidden;
+    cursor: none;
+    font-family: 'Manrope', sans-serif;
+    scroll-behavior: auto;
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-color); }
+::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 4px; }
+
+html.lenis { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+.liquid-glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    transition: background 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease, transform 0.3s ease;
+}
+
+.liquid-glass-nav {
+    background: var(--nav-glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--glass-border);
+    transition: background 0.5s ease, border-color 0.5s ease;
+}
+
+/* Cursor */
+.cursor-dot {
+    width: 8px; height: 8px; background-color: var(--cursor-dot);
+    border-radius: 50%; position: fixed; top: 0; left: 0;
+    transform: translate(-50%, -50%); pointer-events: none; z-index: 9999;
+    mix-blend-mode: difference; transition: width 0.3s, height 0.3s, background-color 0.5s ease;
+}
+.cursor-outline {
+    width: 40px; height: 40px; border: 1px solid var(--cursor-outline);
+    border-radius: 50%; position: fixed; top: 0; left: 0;
+    transform: translate(-50%, -50%); pointer-events: none; z-index: 9998;
+    mix-blend-mode: difference; transition: transform 0.1s ease-out, width 0.3s, height 0.3s, border-color 0.5s ease;
+}
+
+html[data-theme="light"] .cursor-dot, html[data-theme="light"] .cursor-outline { mix-blend-mode: normal; }
+
+.cursor-hover .cursor-dot { width: 0; height: 0; }
+.cursor-hover .cursor-outline {
+    width: 60px; height: 60px; background-color: var(--cursor-outline-hover);
+    border-color: transparent; backdrop-filter: blur(2px);
+}
+
+/* ThreeJS Canvas */
+#webgl-canvas {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: -1; pointer-events: none; opacity: 0.6; transition: opacity 0.5s ease;
+}
+[data-theme="light"] #webgl-canvas { opacity: 0.3; }
+
+/* Loader */
+#loader {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background-color: var(--bg-color); z-index: 10000;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    transition: background-color 0.5s ease;
+}
+.loader-text {
+    font-family: 'Space Grotesk', sans-serif; font-size: 4rem; font-weight: 700; overflow: hidden; color: var(--text-main);
+}
+.loader-text span { display: inline-block; transform: translateY(100%); }
+.loader-progress {
+    width: 200px; height: 2px; background: var(--glass-border);
+    margin-top: 20px; position: relative; overflow: hidden;
+}
+.loader-bar { position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: var(--text-main); }
+
+.text-outline { color: transparent; -webkit-text-stroke: 1px var(--text-muted); transition: color 0.3s, -webkit-text-stroke 0.3s; }
+.text-outline:hover { color: var(--text-main); -webkit-text-stroke: 1px transparent; }
+.reveal-text { overflow: hidden; display: inline-block; }
+.reveal-text span { display: inline-block; transform: translateY(100%); }
+
+.project-card .img-wrapper { overflow: hidden; }
+.project-card img { transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+.project-card:hover img { transform: scale(1.05); }
+
+/* الخطة ب: عكس ألوان الأيقونات المحلية الذكية */
+/* نزل أيقونات لونها أسود. في الدارك مود هتظهر سودا جوة مربع أبيض. وفي اللايت مود الكود ده هيعكسها لبيضاء جوة مربع أسود */
+html[data-theme="light"] .icon-smart-invert { filter: invert(1); }
+html[data-theme="dark"] .icon-smart-invert { filter: invert(0); }
+
+/* إعدادات رسم أسهم الجافاسكريبت */
+.tree-line {
+    stroke-dasharray: 2000;
+    stroke-dashoffset: 2000;
+}
+.tree-arrow {
+    opacity: 0;
+}
+
+nav .nav-link, nav .mobile-link { position: relative; }
+nav .nav-link::after, nav .mobile-link::after {
+    content: ''; position: absolute; width: 0; height: 1px; bottom: -2px; left: 0;
+    background-color: var(--text-main); transition: width 0.3s ease;
+}
+nav .nav-link:hover::after, nav .mobile-link:hover::after { width: 100%; }
+
+.back-to-top {
+    position: fixed; bottom: 2rem; right: 2rem; width: 3rem; height: 3rem;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    z-index: 50; opacity: 0; pointer-events: none; transition: all 0.3s ease; cursor: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+.back-to-top.visible { opacity: 1; pointer-events: auto; }
+.back-to-top:hover { transform: scale(1.1); }
+html[data-theme="dark"] .back-to-top { background-color: #fff; color: #000; }
+html[data-theme="light"] .back-to-top { background-color: #000; color: #fff; }
+
+@keyframes scrollDown {
+    0% { transform: translateY(-100%); }
+    50% { transform: translateY(0); }
+    100% { transform: translateY(100%); }
+}

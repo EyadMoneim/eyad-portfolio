@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en" class="antialiased" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eyad Moneim | Frontend Developer</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: ['class', '[data-theme="dark"]'],
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Manrope', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        background: 'var(--bg-color)',
+                        foreground: 'var(--text-main)',
+                        accent: 'var(--text-muted)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-background text-foreground transition-colors duration-500">
+
+    <div id="loader">
+        <div class="loader-text"><span>EYAD</span></div>
+        <div class="loader-progress"><div class="loader-bar"></div></div>
+    </div>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <canvas id="webgl-canvas"></canvas>
+
+    <header class="fixed top-0 left-0 w-full z-40 p-6 md:px-10 md:py-6 flex justify-between items-center pointer-events-none liquid-glass-nav">
+        <div class="text-xl font-display font-bold tracking-tighter uppercase pointer-events-auto hover-target cursor-pointer" onclick="window.scrollTo(0,0)">
+            E.M.
+        </div>
+        
+        <div class="hidden lg:flex items-center gap-8 pointer-events-auto">
+            <nav class="flex gap-6 text-sm font-medium tracking-wide uppercase">
+                <a href="#about" class="nav-link hover-target hover:text-foreground transition-colors">About</a>
+                <a href="#skills" class="nav-link hover-target hover:text-foreground transition-colors">Skills</a>
+                <a href="#journey" class="nav-link hover-target hover:text-foreground transition-colors">Journey</a>
+                <a href="#projects" class="nav-link hover-target hover:text-foreground transition-colors">Projects</a>
+                <a href="#development" class="nav-link hover-target hover:text-foreground transition-colors">Development</a>
+                <a href="#contact" class="nav-link hover-target hover:text-foreground transition-colors">Contact</a>
+            </nav>
+            
+            <div class="w-px h-4 bg-foreground/20"></div>
+            
+            <div class="flex items-center gap-5">
+                <a href="/Eyad-Moneim.pdf" target="_blank" rel="noopener noreferrer" class="text-sm font-medium tracking-wide hover:text-foreground transition-colors flex items-center gap-2 hover-target text-accent border border-[var(--glass-border)] px-4 py-1.5 rounded-full hover:border-foreground">
+                    CV
+                </a>
+                
+                <button class="text-accent hover:text-foreground transition-colors hover-target" id="theme-toggle">
+                    <svg id="theme-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="lg:hidden pointer-events-auto hover-target cursor-pointer p-2 text-foreground" id="mobile-menu-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </div>
+    </header>
+
+    <div id="mobile-menu" class="fixed inset-0 z-50 pointer-events-none flex justify-end">
+        <div id="mobile-backdrop" class="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-500 ease-in-out pointer-events-none"></div>
+        <div id="mobile-panel" class="relative w-64 md:w-80 h-full liquid-glass border-l border-[var(--glass-border)] p-8 flex flex-col transform translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-auto">
+            <div class="flex justify-between items-center mb-16">
+                <div class="text-xl font-display font-bold">E.M.</div>
+                <button id="close-menu" class="hover-target p-2 text-accent hover:text-foreground transition-colors">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <nav class="flex flex-col gap-8 text-base font-medium tracking-wide uppercase">
+                <a href="#about" class="mobile-link w-fit hover-target text-accent hover:text-foreground transition-colors">About</a>
+                <a href="#skills" class="mobile-link w-fit hover-target text-accent hover:text-foreground transition-colors">Skills</a>
+                <a href="#journey" class="mobile-link w-fit hover-target text-accent hover:text-foreground transition-colors">Journey</a>
+                <a href="#projects" class="mobile-link w-fit hover-target text-accent hover:text-foreground transition-colors">Projects</a>
+                <a href="#development" class="mobile-link w-fit hover-target text-accent hover:text-foreground transition-colors">Development</a>
+                <a href="#contact" class="mobile-link w-fit hover-target text-accent hover:text-foreground transition-colors">Contact</a>
+            </nav>
+            <div class="mt-auto pt-8 border-t border-[var(--glass-border)] flex items-center justify-between">
+                <a href="/Eyad-Moneim.pdf" target="_blank" rel="noopener noreferrer" class="text-sm font-medium tracking-wide hover:text-foreground transition-colors flex items-center gap-2 hover-target text-accent border border-[var(--glass-border)] px-4 py-1.5 rounded-full hover:border-foreground">
+                    CV
+                </a>
+                <button class="text-accent hover:text-foreground transition-colors hover-target" id="mobile-theme-toggle">
+                    <svg id="mobile-theme-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <section id="hero" class="relative h-screen flex flex-col justify-center items-center px-6 pt-20">
+            <div class="text-center z-10 w-full max-w-7xl mx-auto">
+                <p class="hero-subtext text-accent font-mono text-sm md:text-base mb-6 uppercase tracking-[0.2em] opacity-0 translate-y-4">Available for freelance work</p>
+                <h1 class="font-display font-bold leading-[0.85] tracking-tighter text-[15vw] md:text-[12vw] uppercase mx-auto">
+                    <div class="reveal-text block"><span class="hero-title-part text-foreground">Eyad</span></div>
+                    <div class="reveal-text block"><span class="hero-title-part text-outline">Moneim</span></div>
+                </h1>
+                <div class="mt-8 flex justify-between items-end w-full px-4 md:px-0">
+                    <p class="hero-desc text-left text-sm md:text-lg text-accent max-w-xs md:max-w-sm opacity-0">
+                        Software Developer & Data Scientist. Passionate about building elegant solutions and extracting insights from data.
+                    </p>
+                    <p class="hero-desc text-right text-sm md:text-lg text-accent opacity-0 uppercase tracking-widest font-mono">
+                        Frontend<br>Developer
+                    </p>
+                </div>
+            </div>
+            <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center opacity-50 scroll-indicator">
+                <span class="text-xs uppercase tracking-widest mb-2 text-foreground font-mono">Scroll</span>
+                <div class="w-[1px] h-12 bg-foreground/30 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-full bg-foreground transform -translate-y-full animate-[scrollDown_1.5s_ease-in-out_infinite]"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="py-32 px-6 md:px-20 relative">
+            <div class="max-w-5xl mx-auto">
+                <div class="flex flex-col md:flex-row gap-12 md:gap-24 items-start">
+                    <div class="w-full md:w-1/3">
+                        <h2 class="text-xs md:text-sm font-mono uppercase tracking-[0.3em] text-accent mb-4 section-label">01 // About</h2>
+                    </div>
+                    <div class="w-full md:w-2/3">
+                        <h3 class="about-text text-3xl md:text-5xl lg:text-6xl font-display leading-tight font-light text-foreground">
+                            A programmer with a deep passion for <span class="font-bold italic">programming</span>, <span class="font-bold italic">problem-solving</span>, and <span class="font-bold italic">technology</span>.
+                        </h3>
+                        <p class="about-subtext mt-10 text-lg md:text-xl text-accent max-w-2xl font-light leading-relaxed">
+                            Currently building a durable foundation in languages such as C, C++, Python, and JavaScript.<br><br>
+                            I take pleasure in discovering how software can address real-world challenges. Enthusiastic about learning, contributing to team projects, and gaining practical experience.<br><br>
+                            Currently pursuing a Bachelor's in Computer Science & AI at Helwan National University while training in Data Science through the Digital Egypt Pioneers Initiative (DEPI).
+                        </p>
+                        
+                        <div class="flex flex-wrap items-center gap-4 mt-10 opacity-0" id="about-cv-buttons">
+                            <a href="/Eyad-Moneim.pdf" target="_blank" rel="noopener noreferrer" class="liquid-glass px-8 py-3 rounded-full text-sm font-bold font-display uppercase tracking-widest text-foreground hover-target border border-[var(--glass-border)] hover:border-foreground transition-all duration-300 flex items-center gap-3 group">
+                                View Resume
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                            </a>
+                            
+                            <a href="/Eyad-Moneim.pdf" download="Eyad_Moneim_CV.pdf" class="liquid-glass w-12 h-12 rounded-full flex items-center justify-center text-foreground hover-target border border-[var(--glass-border)] hover:border-foreground transition-all duration-300 group" title="Download CV">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform group-hover:translate-y-1 transition-transform"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+       <section id="skills" class="py-32 px-6 md:px-20 relative">
+            <div class="max-w-5xl mx-auto">
+                
+                <div class="mb-24 text-left">
+                    <h2 class="text-xs md:text-sm font-mono uppercase tracking-[0.3em] text-accent mb-4 section-label">02 // Skills</h2>
+                    <h3 class="text-5xl md:text-7xl lg:text-8xl font-display font-medium tracking-tighter text-foreground">
+                        Tech <span class="font-light italic text-accent opacity-90">Stack.</span>
+                    </h3>
+                </div>
+
+                <div class="mb-32">
+                    <div class="mb-12 text-center md:text-left">
+                        <h4 class="text-3xl md:text-5xl font-display font-medium tracking-tighter text-foreground">
+                            Front <span class="font-light italic text-accent opacity-90">End.</span>
+                        </h4>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 skills-grid">
+                        
+                        <div class="flex items-center gap-5 hover-target group w-full">
+                            <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-foreground flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105 shadow-lg">
+                                <img src="/icons/html.png" alt="HTML5" class="w-8 h-8 md:w-10 md:h-10 object-contain icon-smart-invert">
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-end mb-3">
+                                    <span class="text-xl md:text-2xl font-bold font-display text-foreground">HTML5</span>
+                                    <span class="text-base md:text-lg font-bold font-display text-foreground">100%</span>
+                                </div>
+                                <div class="w-full bg-[var(--glass-border)] h-3 md:h-4 rounded-full overflow-hidden">
+                                    <div class="bg-foreground h-full rounded-full w-0 skill-progress" data-width="100%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-5 hover-target group w-full">
+                            <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-foreground flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105 shadow-lg">
+                                <img src="/icons/css.png" alt="CSS" class="w-8 h-8 md:w-10 md:h-10 object-contain icon-smart-invert">
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-end mb-3">
+                                    <span class="text-xl md:text-2xl font-bold font-display text-foreground">CSS</span>
+                                    <span class="text-base md:text-lg font-bold font-display text-foreground">90%</span>
+                                </div>
+                                <div class="w-full bg-[var(--glass-border)] h-3 md:h-4 rounded-full overflow-hidden">
+                                    <div class="bg-foreground h-full rounded-full w-0 skill-progress" data-width="90%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-5 hover-target group w-full">
+                            <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-foreground flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105 shadow-lg">
+                                <img src="/icons/ts.png" alt="TypeScript" class="w-8 h-8 md:w-10 md:h-10 object-contain icon-smart-invert">
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-end mb-3">
+                                    <span class="text-xl md:text-2xl font-bold font-display text-foreground">TypeScript</span>
+                                    <span class="text-base md:text-lg font-bold font-display text-foreground">70%</span>
+                                </div>
+                                <div class="w-full bg-[var(--glass-border)] h-3 md:h-4 rounded-full overflow-hidden">
+                                    <div class="bg-foreground h-full rounded-full w-0 skill-progress" data-width="70%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-5 hover-target group w-full">
+                            <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-foreground flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105 shadow-lg">
+                                <img src="/icons/tailwind.png" alt="Tailwind CSS" class="w-8 h-8 md:w-10 md:h-10 object-contain icon-smart-invert">
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-end mb-3">
+                                    <span class="text-xl md:text-2xl font-bold font-display text-foreground">Tailwind CSS</span>
+                                    <span class="text-base md:text-lg font-bold font-display text-foreground">85%</span>
+                                </div>
+                                <div class="w-full bg-[var(--glass-border)] h-3 md:h-4 rounded-full overflow-hidden">
+                                    <div class="bg-foreground h-full rounded-full w-0 skill-progress" data-width="85%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-32 flex flex-col items-center w-full js-tree-wrapper overflow-hidden">
+                    
+                    <div class="text-4xl md:text-5xl font-bold font-display text-foreground z-10 bg-background px-4">
+                        JavaScript
+                    </div>
+                    
+                    <div class="w-full max-w-4xl relative h-24 md:h-32 z-0 hidden md:block mt-[-15px]">
+                        <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 1000 200" fill="none" stroke="var(--text-muted)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <path class="tree-line" d="M500,15 L500,60" />
+                            <path class="tree-line" d="M125,60 L875,60" />
+                            
+                            <path class="tree-line" d="M125,60 L125,180" />
+                            <polygon class="tree-arrow" points="125,200 115,175 135,175" fill="var(--text-muted)" stroke="none"/>
+                            
+                            <path class="tree-line" d="M375,60 L375,180" />
+                            <polygon class="tree-arrow" points="375,200 365,175 385,175" fill="var(--text-muted)" stroke="none"/>
+                            
+                            <path class="tree-line" d="M625,60 L625,180" />
+                            <polygon class="tree-arrow" points="625,200 615,175 635,175" fill="var(--text-muted)" stroke="none"/>
+                            
+                            <path class="tree-line" d="M875,60 L875,180" />
+                            <polygon class="tree-arrow" points="875,200 865,175 885,175" fill="var(--text-muted)" stroke="none"/>
+                        </svg>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-0 w-full max-w-4xl mt-8 md:mt-0 relative z-10">
+                        <div class="flex justify-center js-node"><span class="liquid-glass w-11/12 text-center px-4 py-4 rounded-2xl text-lg font-bold font-display text-foreground hover-target border border-[var(--glass-border)] hover:border-foreground transition-colors cursor-pointer">React.js</span></div>
+                        <div class="flex justify-center js-node"><span class="liquid-glass w-11/12 text-center px-4 py-4 rounded-2xl text-lg font-bold font-display text-foreground hover-target border border-[var(--glass-border)] hover:border-foreground transition-colors cursor-pointer">Next.js</span></div>
+                        <div class="flex justify-center js-node"><span class="liquid-glass w-11/12 text-center px-4 py-4 rounded-2xl text-lg font-bold font-display text-foreground hover-target border border-[var(--glass-border)] hover:border-foreground transition-colors cursor-pointer">Three.js</span></div>
+                        <div class="flex justify-center js-node"><span class="liquid-glass w-11/12 text-center px-4 py-4 rounded-2xl text-lg font-bold font-display text-foreground hover-target border border-[var(--glass-border)] hover:border-foreground transition-colors cursor-pointer">GSAP</span></div>
+                    </div>
+                </div>
+
+                <div class="mb-32">
+                    <div class="mb-12 text-center md:text-left">
+                        <h4 class="text-3xl md:text-5xl font-display font-medium tracking-tighter text-foreground">
+                            Back <span class="font-light italic text-accent opacity-90">End.</span>
+                        </h4>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 skills-grid">
+                        
+                        <div class="flex items-center gap-5 hover-target group w-full">
+                            <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-foreground flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105 shadow-lg">
+                                <img src="/icons/cpp.png" alt="C++" class="w-8 h-8 md:w-10 md:h-10 object-contain icon-smart-invert">
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-end mb-3">
+                                    <span class="text-xl md:text-2xl font-bold font-display text-foreground">C++</span>
+                                    <span class="text-base md:text-lg font-bold font-display text-foreground">80%</span>
+                                </div>
+                                <div class="w-full bg-[var(--glass-border)] h-3 md:h-4 rounded-full overflow-hidden">
+                                    <div class="bg-foreground h-full rounded-full w-0 skill-progress" data-width="80%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-5 hover-target group w-full">
+                            <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-foreground flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105 shadow-lg">
+                                <img src="/icons/python.png" alt="Python" class="w-8 h-8 md:w-10 md:h-10 object-contain icon-smart-invert">
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-end mb-3">
+                                    <span class="text-xl md:text-2xl font-bold font-display text-foreground">Python</span>
+                                    <span class="text-base md:text-lg font-bold font-display text-foreground">85%</span>
+                                </div>
+                                <div class="w-full bg-[var(--glass-border)] h-3 md:h-4 rounded-full overflow-hidden">
+                                    <div class="bg-foreground h-full rounded-full w-0 skill-progress" data-width="85%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-5 hover-target group w-full">
+                            <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-foreground flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105 shadow-lg">
+                                <img src="/icons/java.png" alt="Java" class="w-8 h-8 md:w-10 md:h-10 object-contain icon-smart-invert">
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-end mb-3">
+                                    <span class="text-xl md:text-2xl font-bold font-display text-foreground">Java</span>
+                                    <span class="text-base md:text-lg font-bold font-display text-foreground">60%</span>
+                                </div>
+                                <div class="w-full bg-[var(--glass-border)] h-3 md:h-4 rounded-full overflow-hidden">
+                                    <div class="bg-foreground h-full rounded-full w-0 skill-progress" data-width="60%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-5 hover-target group w-full">
+                            <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-foreground flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105 shadow-lg">
+                                <img src="/icons/sql.png" alt="SQL" class="w-8 h-8 md:w-10 md:h-10 object-contain icon-smart-invert">
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-end mb-3">
+                                    <span class="text-xl md:text-2xl font-bold font-display text-foreground">SQL</span>
+                                    <span class="text-base md:text-lg font-bold font-display text-foreground">65%</span>
+                                </div>
+                                <div class="w-full bg-[var(--glass-border)] h-3 md:h-4 rounded-full overflow-hidden">
+                                    <div class="bg-foreground h-full rounded-full w-0 skill-progress" data-width="65%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 extras-grid">
+                    <div>
+                        <h4 class="text-2xl md:text-3xl font-display font-bold text-foreground mb-8">
+                            Tools & IDE's
+                        </h4>
+                        <div class="flex flex-wrap gap-4">
+                            <span class="liquid-glass px-6 py-3 rounded-full text-base font-medium text-foreground hover-target cursor-default hover:border-foreground transition-colors">VS Code</span>
+                            <span class="liquid-glass px-6 py-3 rounded-full text-base font-medium text-foreground hover-target cursor-default hover:border-foreground transition-colors">Visual Studio</span>
+                            <span class="liquid-glass px-6 py-3 rounded-full text-base font-medium text-foreground hover-target cursor-default hover:border-foreground transition-colors">PyCharm</span>
+                            <span class="liquid-glass px-6 py-3 rounded-full text-base font-medium text-foreground hover-target cursor-default hover:border-foreground transition-colors">IntelliJ</span>
+                            <span class="liquid-glass px-6 py-3 rounded-full text-base font-medium text-foreground hover-target cursor-default hover:border-foreground transition-colors">Code::Blocks</span>
+                            <span class="liquid-glass px-6 py-3 rounded-full text-base font-medium text-foreground hover-target cursor-default hover:border-foreground transition-colors">CLion</span>
+                            <span class="liquid-glass px-6 py-3 rounded-full text-base font-medium text-foreground hover-target cursor-default hover:border-foreground transition-colors">SSMS</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-2xl md:text-3xl font-display font-bold text-foreground mb-8">
+                            Languages
+                        </h4>
+                        <div class="flex flex-col gap-4 w-full">
+                            <div class="liquid-glass px-6 py-4 rounded-2xl w-full flex justify-between items-center hover-target hover:border-foreground transition-colors cursor-default">
+                                <span class="font-bold text-foreground text-lg">Arabic</span>
+                                <span class="text-accent font-mono">Native</span>
+                            </div>
+                            <div class="liquid-glass px-6 py-4 rounded-2xl w-full flex justify-between items-center hover-target hover:border-foreground transition-colors cursor-default">
+                                <span class="font-bold text-foreground text-lg">English</span>
+                                <span class="text-accent font-mono">C1</span>
+                            </div>
+                            <div class="liquid-glass px-6 py-4 rounded-2xl w-full flex justify-between items-center hover-target hover:border-foreground transition-colors cursor-default">
+                                <span class="font-bold text-foreground text-lg">German</span>
+                                <span class="text-accent font-mono">A2</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="journey" class="py-32 px-6 md:px-20">
+             <div class="max-w-5xl mx-auto">
+                <div class="mb-20 text-left">
+                    <h2 class="text-xs md:text-sm font-mono uppercase tracking-[0.3em] text-accent mb-4 section-label">03 // Journey</h2>
+                    <h3 class="text-4xl md:text-6xl lg:text-7xl font-display font-medium tracking-tighter text-foreground">
+                        Education<br><span class="font-light italic text-accent opacity-90">& Experience</span>
+                    </h3>
+                </div>
+
+                <div class="relative timeline-wrapper py-10 overflow-hidden mt-10">
+                    <div class="absolute left-6 md:left-1/2 top-0 bottom-0 w-[2px] bg-[var(--glass-border)] transform -translate-x-1/2 rounded-full"></div>
+                    <div class="absolute left-6 md:left-1/2 top-0 w-[2px] bg-foreground transform -translate-x-1/2 timeline-progress rounded-full origin-top shadow-[0_0_10px_var(--text-main)]" style="height: 0%;"></div>
+
+                    <div class="timeline-item flex flex-col md:flex-row w-full mb-16 items-start md:items-center justify-between relative">
+                        <div class="w-full md:w-5/12 pl-16 md:pl-0 md:pr-12 md:text-right slide-from-left">
+                            <div class="timeline-content liquid-glass p-6 md:p-8 rounded-2xl w-full hover-target group">
+                                <h4 class="text-xl font-bold text-foreground font-display">B.Sc. Computer Science & AI</h4>
+                                <p class="text-accent text-sm mt-2 font-mono">Sep 2024 - Present</p>
+                                <p class="text-accent text-sm mt-3 opacity-80">Helwan National University<br>Level 2 · GPA: 3.26 · Cairo, Egypt</p>
+                            </div>
+                        </div>
+                        <div class="absolute left-6 md:static md:w-2/12 flex justify-center z-10 transform -translate-x-1/2 md:translate-x-0">
+                            <div class="timeline-icon w-10 h-10 rounded-full border border-[var(--glass-border)] bg-[var(--bg-color)] flex items-center justify-center text-[var(--text-muted)] transition-all duration-500 shadow-[var(--glass-shadow)] backdrop-blur-md">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                            </div>
+                        </div>
+                        <div class="hidden md:block md:w-5/12"></div>
+                    </div>
+
+                    <div class="timeline-item flex flex-col md:flex-row-reverse w-full mb-16 items-start md:items-center justify-between relative">
+                        <div class="w-full md:w-5/12 pl-16 md:pl-12 md:text-left slide-from-right">
+                            <div class="timeline-content liquid-glass p-6 md:p-8 rounded-2xl w-full hover-target group">
+                                <h4 class="text-xl font-bold text-foreground font-display">Data Science Trainee</h4>
+                                <p class="text-accent text-sm mt-2 font-mono">Dec 2025 - Present</p>
+                                <p class="text-accent text-sm mt-3 opacity-80">Digital Egypt Pioneers Initiative (DEPI)<br>Intensive data science program</p>
+                            </div>
+                        </div>
+                        <div class="absolute left-6 md:static md:w-2/12 flex justify-center z-10 transform -translate-x-1/2 md:translate-x-0">
+                            <div class="timeline-icon w-10 h-10 rounded-full border border-[var(--glass-border)] bg-[var(--bg-color)] flex items-center justify-center text-[var(--text-muted)] transition-all duration-500 shadow-[var(--glass-shadow)] backdrop-blur-md">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+                            </div>
+                        </div>
+                        <div class="hidden md:block md:w-5/12"></div>
+                    </div>
+
+                    <div class="timeline-item flex flex-col md:flex-row w-full mb-16 items-start md:items-center justify-between relative">
+                        <div class="w-full md:w-5/12 pl-16 md:pl-0 md:pr-12 md:text-right slide-from-left">
+                            <div class="timeline-content liquid-glass p-6 md:p-8 rounded-2xl w-full hover-target group">
+                                <h4 class="text-xl font-bold text-foreground font-display">Customer Service Representative</h4>
+                                <p class="text-accent text-sm mt-2 font-mono">Jun 2025 - Oct 2025</p>
+                                <p class="text-accent text-sm mt-3 opacity-80">Concentrix (Verizon Account)<br>Handled customer inquiries and support</p>
+                            </div>
+                        </div>
+                        <div class="absolute left-6 md:static md:w-2/12 flex justify-center z-10 transform -translate-x-1/2 md:translate-x-0">
+                            <div class="timeline-icon w-10 h-10 rounded-full border border-[var(--glass-border)] bg-[var(--bg-color)] flex items-center justify-center text-[var(--text-muted)] transition-all duration-500 shadow-[var(--glass-shadow)] backdrop-blur-md">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                            </div>
+                        </div>
+                        <div class="hidden md:block md:w-5/12"></div>
+                    </div>
+
+                    <div class="timeline-item flex flex-col md:flex-row-reverse w-full mb-0 items-start md:items-center justify-between relative">
+                        <div class="w-full md:w-5/12 pl-16 md:pl-12 md:text-left slide-from-right">
+                            <div class="timeline-content liquid-glass p-6 md:p-8 rounded-2xl w-full hover-target group">
+                                <h4 class="text-xl font-bold text-foreground font-display">Video Editor</h4>
+                                <p class="text-accent text-sm mt-2 font-mono">2019 - 2023</p>
+                                <p class="text-accent text-sm mt-3 opacity-80">Freelance<br>AL Khobar, Suadi Arabia</p>
+                            </div>
+                        </div>
+                        <div class="absolute left-6 md:static md:w-2/12 flex justify-center z-10 transform -translate-x-1/2 md:translate-x-0">
+                            <div class="timeline-icon w-10 h-10 rounded-full border border-[var(--glass-border)] bg-[var(--bg-color)] flex items-center justify-center text-[var(--text-muted)] transition-all duration-500 shadow-[var(--glass-shadow)] backdrop-blur-md">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                            </div>
+                        </div>
+                        <div class="hidden md:block md:w-5/12"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        
+
+        <section id="projects" class="py-32 px-6 md:px-20">
+    <div class="mb-20 flex justify-between items-end">
+    <div class="text-left">
+        <h2 class="text-xs md:text-sm font-mono uppercase tracking-[0.3em] text-accent mb-4 section-label">04 // Projects</h2>
+        <h3 class="text-4xl md:text-6xl lg:text-7xl font-display font-medium tracking-tighter text-foreground">
+            Builds<br><span class="font-light italic text-accent opacity-90">& Highlights</span>
+        </h3>
+    </div>
+    
+    <span class="text-sm text-accent hidden md:block pb-2">Hover to explore</span>
+</div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-y-32">
+            
+    <a href="https://github.com/EyadMoneim/J.A.R.V.I.S.git" target="_blank" rel="noopener noreferrer" class="project-card block group cursor-pointer hover-target md:mt-0 liquid-glass p-4 rounded-2xl">
+        <div class="img-wrapper w-full aspect-[4/3] rounded-xl overflow-hidden relative">
+            <img src="/icons/jarvis.png" alt="Project 1" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500">
+            <div class="absolute inset-0 bg-background/20 group-hover:bg-transparent transition-colors duration-500"></div>
+        </div>
+        
+        <div class="mt-6 px-2 pb-2 flex justify-between items-start gap-4">
+            <div class="flex-1">
+                <h3 class="text-2xl md:text-3xl font-display font-medium text-foreground mb-2">J.A.R.V.I.S Voice Assistant</h3>
+                
+                <p class="text-accent text-sm mb-4 leading-relaxed">
+                    A smart voice assistant capable of handling daily tasks, fetching information, and executing basic commands seamlessly.
+                </p>
+                
+                <div class="flex flex-wrap gap-2">
+                    <span class="liquid-glass px-4 py-1.5 rounded-full text-xs font-bold font-mono text-foreground hover:border-foreground transition-colors cursor-default">Python</span>
+                    <span class="liquid-glass px-4 py-1.5 rounded-full text-xs font-bold font-mono text-foreground hover:border-foreground transition-colors cursor-default">Speech Recognition</span>
+                </div>
+            </div>
+
+            <div class="w-10 h-10 flex-shrink-0 rounded-full border border-[var(--glass-border)] flex items-center justify-center group-hover:bg-foreground group-hover:text-background transition-all duration-300 transform -rotate-45 group-hover:rotate-0 mt-1">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </div>
+        </div>
+    </a>
+
+    <a href="https://ldi-website-m9g4.vercel.app/" target="_blank" rel="noopener noreferrer" class="project-card block group cursor-pointer hover-target md:mt-32 liquid-glass p-4 rounded-2xl">
+        <div class="img-wrapper w-full aspect-[4/3] rounded-xl overflow-hidden relative">
+            <img src="/icons/ldi.png" alt="Project 2" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500">
+            <div class="absolute inset-0 bg-background/20 group-hover:bg-transparent transition-colors duration-500"></div>
+        </div>
+        
+        <div class="mt-6 px-2 pb-2 flex justify-between items-start gap-4">
+            <div class="flex-1">
+                <h3 class="text-2xl md:text-3xl font-display font-medium text-foreground mb-2">Leadership Institute (LDI) Website</h3>
+                
+                <p class="text-accent text-sm mb-4 leading-relaxed">
+                Developing a web-based platform for institutional presence and information delivery for the Ministry of Higher Education, Egypt.
+
+                </p>
+                
+                <div class="flex flex-wrap gap-2">
+                    <span class="liquid-glass px-4 py-1.5 rounded-full text-xs font-bold font-mono text-foreground hover:border-foreground transition-colors cursor-default">HTML</span>
+                    <span class="liquid-glass px-4 py-1.5 rounded-full text-xs font-bold font-mono text-foreground hover:border-foreground transition-colors cursor-default">CSS</span>
+                    <span class="liquid-glass px-4 py-1.5 rounded-full text-xs font-bold font-mono text-foreground hover:border-foreground transition-colors cursor-default">JavaScript</span>
+                </div>
+            </div>
+
+            <div class="w-10 h-10 flex-shrink-0 rounded-full border border-[var(--glass-border)] flex items-center justify-center group-hover:bg-foreground group-hover:text-background transition-all duration-300 transform -rotate-45 group-hover:rotate-0 mt-1">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </div>
+        </div>
+    </a>
+
+        </div>
+    </div>
+</section>
+
+        <section id="development" class="py-32 px-6 md:px-20 relative">
+            <div class="max-w-5xl mx-auto">
+                <div class="mb-20 text-left">
+                    <h2 class="text-xs md:text-sm font-mono uppercase tracking-[0.3em] text-accent mb-4 section-label">05 // Development</h2>
+                    <h3 class="text-4xl md:text-6xl lg:text-7xl font-display font-medium tracking-tighter text-foreground">
+                        Development <br><span class="font-light italic text-accent opacity-90"> & impact.</span>
+                    </h3>
+                </div>
+
+                <div class="relative dev-timeline-wrapper py-10 overflow-visible mt-10">
+                    <div class="absolute left-6 md:left-1/2 top-0 bottom-0 w-[2px] bg-[var(--glass-border)] transform -translate-x-1/2 rounded-full z-0"></div>
+                    <div class="absolute left-6 md:left-1/2 top-0 w-[2px] bg-foreground transform -translate-x-1/2 dev-timeline-progress rounded-full origin-top shadow-[0_0_10px_var(--text-main)] z-0" style="height: 0%;"></div>
+
+                    <div class="dev-timeline-item flex flex-col md:flex-row w-full mb-16 items-start md:items-center justify-between relative z-10">
+                        <div class="w-full md:w-5/12 pl-16 md:pl-0 md:pr-12 md:text-right dev-slide-from-left">
+                            <div class="timeline-content liquid-glass p-6 md:p-8 rounded-2xl w-full hover-target group">
+                                <h4 class="text-xl font-bold text-foreground font-display">G-Force Student Activities Forum (2nd Edition)</h4>
+                                <p class="text-accent text-sm mt-2 flex items-center md:justify-end justify-start gap-2 font-mono">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> Sep 2025
+                                </p>
+                                <p class="text-accent text-sm mt-3 opacity-80">Galala National University</p>
+                            </div>
+                        </div>
+                        <div class="absolute left-6 md:static md:w-2/12 flex justify-center z-20 transform -translate-x-1/2 md:translate-x-0">
+                            <div class="dev-timeline-icon w-10 h-10 rounded-full border border-[var(--glass-border)] bg-[var(--bg-color)] flex items-center justify-center text-[var(--text-muted)] transition-all duration-500 shadow-[var(--glass-shadow)] backdrop-blur-md">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            </div>
+                        </div>
+                        <div class="hidden md:block md:w-5/12"></div>
+                    </div>
+
+                    <div class="dev-timeline-item flex flex-col md:flex-row-reverse w-full mb-16 items-start md:items-center justify-between relative z-10">
+                        <div class="w-full md:w-5/12 pl-16 md:pl-12 md:text-left dev-slide-from-right">
+                            <div class="timeline-content liquid-glass p-6 md:p-8 rounded-2xl w-full hover-target group">
+                                <h4 class="text-xl font-bold text-foreground font-display">Training on Protocol, Etiquette & Workplace Formalities</h4>
+                                <p class="text-accent text-sm mt-2 flex items-center justify-start gap-2 font-mono">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> Sep 2025
+                                </p>
+                                <p class="text-accent text-sm mt-3 opacity-80">Leadership Candidates Program</p>
+                            </div>
+                        </div>
+                        <div class="absolute left-6 md:static md:w-2/12 flex justify-center z-20 transform -translate-x-1/2 md:translate-x-0">
+                            <div class="dev-timeline-icon w-10 h-10 rounded-full border border-[var(--glass-border)] bg-[var(--bg-color)] flex items-center justify-center text-[var(--text-muted)] transition-all duration-500 shadow-[var(--glass-shadow)] backdrop-blur-md">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            </div>
+                        </div>
+                        <div class="hidden md:block md:w-5/12"></div>
+                    </div>
+
+                    <div class="dev-timeline-item flex flex-col md:flex-row w-full mb-16 items-start md:items-center justify-between relative z-10">
+                        <div class="w-full md:w-5/12 pl-16 md:pl-0 md:pr-12 md:text-right dev-slide-from-left">
+                            <div class="timeline-content liquid-glass p-6 md:p-8 rounded-2xl w-full hover-target group">
+                                <h4 class="text-xl font-bold text-foreground font-display">Future Leaders Forum</h4>
+                                <p class="text-accent text-sm mt-2 flex items-center md:justify-end justify-start gap-2 font-mono">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> Oct 2025
+                                </p>
+                                <p class="text-accent text-sm mt-3 opacity-80">Leadership Development Institute (LDI)</p>
+                            </div>
+                        </div>
+                        <div class="absolute left-6 md:static md:w-2/12 flex justify-center z-20 transform -translate-x-1/2 md:translate-x-0">
+                            <div class="dev-timeline-icon w-10 h-10 rounded-full border border-[var(--glass-border)] bg-[var(--bg-color)] flex items-center justify-center text-[var(--text-muted)] transition-all duration-500 shadow-[var(--glass-shadow)] backdrop-blur-md">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            </div>
+                        </div>
+                        <div class="hidden md:block md:w-5/12"></div>
+                    </div>
+
+                    <div class="dev-timeline-item flex flex-col md:flex-row-reverse w-full mb-16 items-start md:items-center justify-between relative z-10">
+                        <div class="w-full md:w-5/12 pl-16 md:pl-12 md:text-left dev-slide-from-right">
+                            <div class="timeline-content liquid-glass p-6 md:p-8 rounded-2xl w-full hover-target group">
+                                <h4 class="text-xl font-bold text-foreground font-display">S.H.I.N.E Initiative</h4>
+                                <p class="text-accent text-sm mt-2 flex items-center justify-start gap-2 font-mono">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> Nov 2025
+                                </p>
+                                <p class="text-accent text-sm mt-3 opacity-80">Cairo University</p>
+                            </div>
+                        </div>
+                        <div class="absolute left-6 md:static md:w-2/12 flex justify-center z-20 transform -translate-x-1/2 md:translate-x-0">
+                            <div class="dev-timeline-icon w-10 h-10 rounded-full border border-[var(--glass-border)] bg-[var(--bg-color)] flex items-center justify-center text-[var(--text-muted)] transition-all duration-500 shadow-[var(--glass-shadow)] backdrop-blur-md">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            </div>
+                        </div>
+                        <div class="hidden md:block md:w-5/12"></div>
+                    </div>
+
+                    <div class="dev-timeline-item flex flex-col md:flex-row w-full mb-0 items-start md:items-center justify-between relative z-10">
+                        <div class="w-full md:w-5/12 pl-16 md:pl-0 md:pr-12 md:text-right dev-slide-from-left">
+                            <div class="timeline-content liquid-glass p-6 md:p-8 rounded-2xl w-full hover-target group">
+                                <h4 class="text-xl font-bold text-foreground font-display">AI, Science & Innovation Celebration</h4>
+                                <p class="text-accent text-sm mt-2 flex items-center md:justify-end justify-start gap-2 font-mono">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> Nov 2025
+                                </p>
+                                <p class="text-accent text-sm mt-3 opacity-80">Helwan University (Sponsored by Roseatom)</p>
+                            </div>
+                        </div>
+                        <div class="absolute left-6 md:static md:w-2/12 flex justify-center z-20 transform -translate-x-1/2 md:translate-x-0">
+                            <div class="dev-timeline-icon w-10 h-10 rounded-full border border-[var(--glass-border)] bg-[var(--bg-color)] flex items-center justify-center text-[var(--text-muted)] transition-all duration-500 shadow-[var(--glass-shadow)] backdrop-blur-md">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            </div>
+                        </div>
+                        <div class="hidden md:block md:w-5/12"></div>
+                    </div>
+                </div>
+
+                <div class="mt-40 mb-10 max-w-5xl mx-auto text-center md:text-left">
+                    <h3 class="text-4xl md:text-5xl font-display font-light">Activities & <span class="font-bold italic text-accent">Leadership</span></h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 leadership-cards-wrapper max-w-5xl mx-auto">
+                    <div class="liquid-glass p-8 rounded-3xl flex flex-col justify-between hover-target group transition-all duration-500 hover:-translate-y-2 border border-[var(--glass-border)] hover:border-foreground leadership-card relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-br from-foreground/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <div class="flex justify-between items-start mb-6">
+                                <div class="w-12 h-12 rounded-full bg-[var(--bg-color)] border border-[var(--glass-border)] flex items-center justify-center text-accent group-hover:text-foreground group-hover:border-foreground transition-all duration-300">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5l-9-5V6l9-5 9 5v9.5l-9 5z"></path><path d="M12 1.5v19"></path><path d="M3 6l9 5 9-5"></path></svg>
+                                </div>
+                                <div class="text-accent text-sm font-mono flex items-center gap-2 group-hover:text-foreground transition-colors">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> 2025 - Present
+                                </div>
+                            </div>
+                            <h4 class="text-xl font-bold text-foreground font-display mb-3 group-hover:text-white transition-colors">Leadership Support Member</h4>
+                            <p class="text-accent text-sm font-mono opacity-80 leading-relaxed">Leadership Development Institute (LDI), Ministry of Higher Education</p>
+                        </div>
+                    </div>
+
+                         <div class="liquid-glass p-8 rounded-3xl flex flex-col justify-between hover-target group transition-all duration-500 hover:-translate-y-2 border border-[var(--glass-border)] hover:border-foreground leadership-card relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-br from-foreground/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <div class="flex justify-between items-start mb-6">
+                                <div class="w-12 h-12 rounded-full bg-[var(--bg-color)] border border-[var(--glass-border)] flex items-center justify-center text-accent group-hover:text-foreground group-hover:border-foreground transition-all duration-300">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                                </div>
+                                <div class="text-accent text-sm font-mono flex items-center gap-2 group-hover:text-foreground transition-colors">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> 2025 - Present
+                                </div>
+                            </div>
+                            <h4 class="text-xl font-bold text-foreground font-display mb-3 group-hover:text-white transition-colors">Vice Head, Family Committee</h4>
+                            <p class="text-accent text-sm font-mono opacity-80 leading-relaxed">Faculty Student Union</p>
+                        </div>
+                    </div>
+
+                   
+
+                    <div class="liquid-glass p-8 rounded-3xl flex flex-col justify-between hover-target group transition-all duration-500 hover:-translate-y-2 border border-[var(--glass-border)] hover:border-foreground leadership-card relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-br from-foreground/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <div class="flex justify-between items-start mb-6">
+                                <div class="w-12 h-12 rounded-full bg-[var(--bg-color)] border border-[var(--glass-border)] flex items-center justify-center text-accent group-hover:text-foreground group-hover:border-foreground transition-all duration-300">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                                </div>
+                                <div class="text-accent text-sm font-mono flex items-center gap-2 group-hover:text-foreground transition-colors">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> 2026 - Present
+                                </div>
+                            </div>
+                            <h4 class="text-xl font-bold text-foreground font-display mb-3 group-hover:text-white transition-colors">Head, HR Committee</h4>
+                            <p class="text-accent text-sm font-mono opacity-80 leading-relaxed">Ciaro Activity Beshababha , Minstry of Youth and Sports</p>
+                        </div>
+                    </div>
+
+                     <div class="liquid-glass p-8 rounded-3xl flex flex-col justify-between hover-target group transition-all duration-500 hover:-translate-y-2 border border-[var(--glass-border)] hover:border-foreground leadership-card relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-br from-foreground/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <div class="flex justify-between items-start mb-6">
+                                <div class="w-12 h-12 rounded-full bg-[var(--bg-color)] border border-[var(--glass-border)] flex items-center justify-center text-accent group-hover:text-foreground group-hover:border-foreground transition-all duration-300">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                                </div>
+                                <div class="text-accent text-sm font-mono flex items-center gap-2 group-hover:text-foreground transition-colors">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> 2025 - Present
+                                </div>
+                            </div>
+                            <h4 class="text-xl font-bold text-foreground font-display mb-3 group-hover:text-white transition-colors">Faculty Leader for Level 2</h4>
+                            <p class="text-accent text-sm font-mono opacity-80 leading-relaxed">Computer Science Department – Helwan National University</p>
+                        </div>
+                    </div>
+
+               
+
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="min-h-screen flex flex-col justify-center items-center px-6 py-32 relative">
+            <div class="text-center z-10 w-full max-w-5xl mx-auto">
+                <h2 class="text-xs md:text-sm font-mono uppercase tracking-[0.3em] text-accent mb-12">06 // Contact</h2>
+                <a href="mailto:hello@eyadmoneim.com" class="hover-target inline-block group">
+                    <h1 class="font-display font-bold leading-none tracking-tighter text-[12vw] md:text-[10vw] uppercase text-outline group-hover:text-foreground transition-all duration-500">
+                        Let's Talk
+                    </h1>
+                </a>
+                
+                <div class="mt-20 flex flex-col md:flex-row justify-between items-center w-full gap-8 border-t border-foreground/10 pt-10">
+                    <div class="text-accent text-sm">
+                        © 2026 Eyad Moneim.
+                    </div>
+                    <div class="flex gap-8 text-sm uppercase tracking-wider font-mono">
+                        <a href="https://www.linkedin.com/in/eyad-moneim-3041bb256/" target="_blank" class="hover:text-foreground transition-colors hover-target text-accent">LinkedIn</a>
+                        <a href="https://github.com/EyadMoneim" target="_blank" class="hover:text-foreground transition-colors hover-target text-accent">GitHub</a>
+                        <a href="https://www.youtube.com/@Eedoo" target="_blank" class="hover:text-foreground transition-colors hover-target text-accent">YouTube</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
